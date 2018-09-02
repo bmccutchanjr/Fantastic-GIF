@@ -1,0 +1,111 @@
+*
+{   box-sizing: border-box;
+}
+
+:root
+{   --font-family: sans-serif;
+    --head-bg-color: green;
+    --head-brd-color: #004400;
+    --text-color: black;
+}
+
+body
+{   color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0px;
+    padding: 0px;
+}
+
+header
+{   background: var(--head-bg-color);
+    border: 2px solid var(--head-brd-color);
+    border-radius: 2px;
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+}
+
+section
+{   margin: 25px;
+}
+
+/* begin style for aside
+*/
+
+aside
+{   background: rgba(0, 255, 0, 0.5);
+    border: 2px solid black;
+    border-radius: 2px;
+    height: 100%;
+    float: left;
+    margin-right: 25px;
+    width: 150px;
+}
+
+aside hr
+{   margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+aside button
+{   background: blue;
+    border: 1px solid blue;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
+}
+
+aside button:hover
+{   background: white;
+}
+
+/* end style for aside
+*/
+
+/* begin style for main div
+*/
+
+main
+{   background: rgba(0, 0, 255, 0.5);
+    border: 2px solid black;
+    border-radius: 2px;
+    float: left;
+}
+
+.image
+{   /* float: left; */
+    margin-right: 25px;
+}
+
+/* end style for main div
+*/
+
+/* style specific to sticky footer
+*/
+
+body, html
+{   height: 100%;
+}
+
+.wrapper
+{   background: rgba(0, 255, 255, 0.5);
+    height: auto;
+    margin: 0px;
+    margin-bottom: -31px;
+    min-height: 100%;
+    padding: 25px;
+}
+
+.push
+{   background: yellow;
+    clear: both;
+    height: 31px;
+}
+
+footer
+{   background: var(--head-bg-color);
+    font-size: 10px;
+    padding: 10px;
+    text-align: center;
+}
