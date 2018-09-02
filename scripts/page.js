@@ -1,4 +1,7 @@
 var buttons = [];           // array of buttons
+var imageURLs = [];         // array of objects containing the URL for still and animated images
+const stillImage = 0;       // index to the still image in imageURLs
+const runImage = 1;     // index to the running image in imageURLs
 
 var myAPIKey = "3AFkSx6nd8NPugiU5xJtbRdNWYAeS83c";
 
@@ -135,7 +138,8 @@ function getGIPHY (getWhat)
     // buttons located in .button-div.  Whether this button is the same as the one just previously
     // clicked or not, it's okay to clear anything currently in #image-div
     
-    $("#image-div").empty();
+    $("#image-main").empty();
+    imageURLs = [];
 
     // create the search string
     var URL = "http://api.giphy.com/v1/gifs/search?q=" + 
@@ -152,10 +156,17 @@ function getGIPHY (getWhat)
         {   // for each image returned by the search, create a new <DIV> to hold that image and any
             // associated data
 
+            var imgArray = 
+            [   thisGIF.images.fixed_height_still.url,
+                thisGIF.images.fixed_height.url,
+            ];
+            imageURLs.push (imgArray);
+
             var newImg = $("<img>");
             newImg
-            .css("animation-play-state", "paused")
-            .attr("src", thisGIF.images.fixed_height.url);
+                .addClass("image")
+                .attr("src", imgArray[stillImage])
+                .attr("value", imageURLs.length - 1);
 
             var ratedP = $("<p>");
             ratedP
@@ -163,11 +174,11 @@ function getGIPHY (getWhat)
 
             var newDiv = $("<div>");
             newDiv
-                .addClass("image")
+                .addClass("image-div")
                 .append(newImg)
                 .append(ratedP);
 
-            $("#image-div").append(newDiv);
+            $("#image-main").append(newDiv);
         })
     })
     .catch(function()
@@ -191,4 +202,18 @@ $(document).ready(function()
     {   // generic event handler for topic buttons
         getGIPHY (this);
     });
+
+    $("#image-main")
+        .on("mouseenter", ".image", function()
+        {   // It appears jQuery does not support a single method for "hover", but rather uses
+            // .mouseenter() end .mouseleave() events.  (Actually jQuery does have a .hover()
+            // method, bit it requires separate handlers for .mouseenter() and .mouseleave()
+            // any way.)
+
+            $(this).attr("src", imageURLs[$(this).attr("value")] [runImage]);
+        })
+        .on("mouseleave", ".image", function()
+        {   $(this).attr("src", imageURLs[$(this).attr("value")] [stillImage]);
+        });
+
 })

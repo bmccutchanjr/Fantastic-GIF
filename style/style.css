@@ -71,9 +71,10 @@ main
     border: 2px solid black;
     border-radius: 2px;
     float: left;
+    /* padding: 25px; */
 }
 
-.image
+.image-div
 {   /* float: left; */
     margin-right: 25px;
 }
@@ -94,6 +95,7 @@ body, html
     margin: 0px;
     margin-bottom: -31px;
     min-height: 100%;
+    overflow: auto;
     padding: 25px;
 }
 
