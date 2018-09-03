@@ -143,6 +143,71 @@ function addButton()
     localStorage.setItem ("buttons", buttons);
 }
 
+function getBandsInTown (artist)
+{   // interface with BandsInTown.com to get data for the band.  I'm thinking websites and upcoming
+    // tour dates.
+
+    var URL = "https://rest.bandsintown.com/artists/" +
+        artist +
+        "?app_id=codingbootcamp";
+
+    $.get(URL)
+    .then (function(response)
+    {   //
+
+        var newLink = $("<a>");
+        var newDiv = $("<div>");
+
+        if (response.facebook_page_url)
+        {   newLink
+                .addClass("something")
+                .attr("href", response.facebook_page_url)
+                .text(artist + " on FaceBook");
+            
+            $("#image-main").prepend(newLink);
+        }
+
+        if (response.upcoming_event_count > 0)
+        {   // If there are no upcoming events, don't bother looking for any...
+
+            URL = "https://rest.bandsintown.com/artists/" +
+                artist +
+                "/events?app_id=codingbootcamp";
+
+            $.get(URL)
+            .then (function(response)
+            {   // display upcoming tour dates for Akron, Cleveland and Youngstown
+
+                response.forEach(function(concert)
+                {   if ((concert.venue.country) &&
+                        (concert.venue.country === "United States"))
+                    {   
+                        if ((concert.venue.city === "Akron") ||
+                            (concert.venue.city === "Buffalo") ||
+                            (concert.venue.city === "Cleveland") ||
+                            (concert.venue.city === "Pittsburg") ||
+                            (concert.venue.city === "Youngstown"))
+                        {   var newP = $("<p>");
+                            newP
+                                .text(artist + " is coming to " + concert.venue.city +
+//                                 " on " + concert.datetime.substring(9));
+                                " on " + concert.datetime);
+
+                            $("#image-main")
+                                .prepend($("<hr>"))
+                                .prepend(newP);
+                        }
+                    }
+                })
+            })
+        }
+    })
+    .catch()
+    {   // something didn't work right.  Maybe this is an error -- maybe there is no data for this
+        // artist
+    }
+}
+
 function getGIPHY (getWhat)
 {   // interface with GIPHY to retrieve images
 
@@ -192,6 +257,9 @@ function getGIPHY (getWhat)
 
             $("#image-main").append(newDiv);
         })
+
+        // and now, get info on the band...
+        getBandsInTown ($(getWhat).text());
     })
     .catch(function()
     {   // some kind of error occured...can't display any images
