@@ -10,7 +10,7 @@ var buzz = new Audio ("audio/buzz.mp3");
 var ting = new Audio ("audio/ting.mp3");
 
 function playAudio (sound)
-{   // This code could be called repeatedly from several places in the code.  So it goes in a function
+{   // This code might get called repeatedly from several places in the script.  So it goes in a function
     // to ensure that it gets handled the same way each time
 
     // audio may not play properly if it is not explicitly loaded before each .play()
@@ -71,12 +71,15 @@ function displayButtons ()
     }
 
     // If the script got to this point, there are elements in button[] representing the user-defined
-    // buttons for the application.  Display them...
+    // buttons for the application.  Display them.
+    //
+    // And remember, I want all comparisons and jQuery selectors to be case insensitive.  So convert
+    // bString to lower case when creating the attribute "value".
 
     for (var i=0; i<bLength; i++)
     {   var newButton = $("<button>");
         newButton
-            .attr("value", buttons[i])
+            .attr("value", buttons[i].toLowerCase())
             .addClass("something")
             .text(buttons[i]);
 
@@ -94,20 +97,29 @@ function addButton()
         return;
     }
 
-    var bIndex = buttons.indexOf(bString);
+    var bLength = buttons.length;
 
-    if (bIndex != -1)
-    {   // This button already exists...that's an error
-        playAudio (buzz);
+    // Don't let the user create duplicate buttons.
+    //
+    // I want this comparison to be case insensitive (ie: "janis joplin" should not be allowed if "Janis
+    // Joplin" is already in the array.) and that rules out a simple buttons.indexOf().  .indexOf() is
+    // not case insensitive.  In fact there doesn't appear to be any easy way to do a case insensitive
+    // comparison.
+    //
+    // So I need a for-loop.
 
-        flashIt ($("button[value='" + bString + "']"));
-        return;
+    for (var i=0; i<bLength; i++)
+    {   if (buttons[i].toLowerCase() === bString.toLowerCase())
+        {   // It's a match...it's an error.  Let the user know and return
+            playAudio (buzz);
+
+            flashIt ($("button[value='" + bString.toLowerCase() + "']"));
+            return;
+        }
     }
-    
+
     // The error conditions are out of the way...create a new element in buttons[] for the text entered
     // and then create a button for it
-
-    var bLength = buttons.length;
 
     for (var i=0; i<bLength; i++)
     {   // insert the new string into buttons[] in alphabetical order
