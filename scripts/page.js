@@ -1,6 +1,5 @@
 var buttons = [];           // array of buttons
 var imageURLs = [];         // array of objects containing the URL for still and animated images
-var GIPHYoffset = 0;        // first image to tetrieve from GIPHY
 const stillImage = 0;       // index to the still image in imageURLs
 const runImage = 1;         // index to the running image in imageURLs
 
@@ -256,19 +255,21 @@ function getBandsInTown (artist)
     }
 }
 
-function getGIPHY (getWhat)
+function getGIPHY (getWhat, offset)
 {   // interface with GIPHY to retrieve images
 
+    if (offset === undefined) offset = 0;
     // remove the GET MORE button.  The GET MORE button is the last thing added to #image-main by this
     // function and should be the last child.  The only time GET MORE is not the last child is when
     // #image-main is empty.
 
-    $("#image-main:last-child").remove();
+//     $("#image-main:last-child").remove();
+    $(".10-more").remove();
 
     // create the search string
     var URL = "http://api.giphy.com/v1/gifs/search?q=" + getWhat +
         "&api_key=" + myAPIKey +
-        "&limit=10&offset=" + GIPHYoffset;
+        "&limit=10&offset=" + offset;
 
     // and search GIPHY
     $.get(URL)
@@ -308,6 +309,7 @@ function getGIPHY (getWhat)
         var button = $("<button>");
         button
             .addClass ("10-more")
+            .attr("offset", (offset * 1) + 10)
             .attr("value", getWhat)
             .text("GET 10 MORE");
 
@@ -316,7 +318,7 @@ function getGIPHY (getWhat)
 
         // and now, get info on the band...but only do it once
 
-        if (GIPHYoffset === 0)
+        if (offset === 0)
             getBandsInTown (getWhat);
     })
     .catch(function()
@@ -346,7 +348,6 @@ $(document).ready(function()
         $("#image-main").empty();
         $("#concert-div").empty();
         imageURLs = [];
-        GIPHYoffset = 0;
 
         // and get data for the button that was clicked
         getGIPHY ($(this).text());
@@ -356,8 +357,8 @@ $(document).ready(function()
         .on("click", ".10-more", function()
         {   // generic event handler for topic buttons
 
-            GIPHYoffset += 10;
-            getGIPHY ($(this).attr("value"));
+//             GIPHYoffset += 10;
+            getGIPHY ($(this).attr("value"), $(this).attr("offset"));
         })
         .on("mouseenter", ".image", function()
         {   // It appears jQuery does not support a single method for "hover", but rather uses
