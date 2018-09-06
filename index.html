@@ -9,6 +9,10 @@
         <link rel="icon" 
               type="image/png" 
               href="images/favicon.png">
+        <link rel="stylesheet"
+              href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+              integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+              crossorigin="anonymous">
         <link href="style/style.css"
               rel="stylesheet"
               type="text/css">
@@ -18,21 +22,24 @@
 
     <body>
         <div class="wrapper">
-            <header>Fantastic .GIF</header>
+            <header>Fantastic .GIF
+                <div class="GIPHY">powered by <em>GIPHY</em></div>
+            </header>
 
             <section>
                 <aside id="links">
                     <div class="form-div">
                         <input id="button-to-add" type="text" default="add a button">
-                        <button id="add-button">ADD A BUTTON</button>
+                        <button id="add-button" class="button-theme">ADD A BUTTON</button>
                     </div>
                     <hr>
                     <div class="button-div"></div>
                 </aside>
     
                 <main id="image-main">
+                    <div id="button-bar"></div>
                     <h2>There are no images just now.</h2>
-                    <h2>Add a band, or click on one of band buttons.</h2>
+                    <h2>Add a band, or click on one of the band buttons.</h2>
                 </main>
                 <div class="push"></div>
             </section>

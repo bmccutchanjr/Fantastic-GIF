@@ -1,7 +1,5 @@
 var buttons = [];           // array of buttons
-var imageURLs = [];         // array of objects containing the URL for still and animated images
-const stillImage = 0;       // index to the still image in imageURLs
-const runImage = 1;         // index to the running image in imageURLs
+var favorites = [];         // array of objects identifying favorite images
 
 var myAPIKey = "3AFkSx6nd8NPugiU5xJtbRdNWYAeS83c";
 
@@ -28,10 +26,16 @@ function flashIt (elem, num)
     if (num === undefined) num = 9;
     if (num === 0) return;
 
-    var color = "white";
-    if ((num % 2) != 0) color = "blue";
-
-    $(elem).css("background-color", color);
+    if ((num % 2) != 0)
+    {   $(elem)
+            .css("background-color", "blue")
+            .css("color", "white");
+    }
+    else
+    {   $(elem)
+        .css("background-color", "white")
+        .css("color", "darkblue");
+    }
 
     setTimeout (function()
     {   // If I try to decriment num in the function call to flashIt() (ie: flashIt (function(), num--))
@@ -44,12 +48,22 @@ function flashIt (elem, num)
         flashIt (elem, num);        
     }, 100);
 }
+
 function getButtons ()
 {   // getButtons() is only called when the page is loaded.  It's only function is to initialize buttons[]
     // from window.localStorage
 
     if (localStorage.getItem("buttons"))
         buttons = window.localStorage.getItem("buttons").split(",");
+}
+
+function getFavorites ()
+{   // getFavorites() is only called when the page is loaded.  It's only function is to initialize favorites[]
+    // from window.localStorage
+
+//     if (localStorage.getItem("favorites"))
+//         favorites = window.localStorage.getItem("favorites").split(",");
+    favorites = [];
 }
 
 function displayButtons ()
@@ -80,7 +94,7 @@ function displayButtons ()
     {   var newButton = $("<button>");
         newButton
             .attr("value", buttons[i].toLowerCase())
-            .addClass("something")
+            .addClass("button-theme")
             .text(buttons[i]);
 
         $(".button-div").append(newButton);
@@ -173,11 +187,12 @@ function getBandsInTown (artist)
             var newLink = $("<a>");
 
             newLink
-                .addClass("something")
+                .addClass("button-theme")
                 .attr("href", response.facebook_page_url)
                 .text(artist + " on FaceBook");
             
-            $("#image-main").prepend(newLink);
+//             $("#image-main").prepend(newLink);
+            $(".button-bar").prepend(newLink);
         }
 
         if (response.upcoming_event_count > 0)
@@ -191,7 +206,7 @@ function getBandsInTown (artist)
 
             $.get(URL)
             .then (function(response)
-            {   // display upcoming tour dates for Akron, Cleveland and Youngstown
+            {   // display upcoming tour dates for events in Ohio and nearby states
 
                 // first, clear any data that might be in #concert-div from another query
                 $("#concert-div").empty();
@@ -217,7 +232,8 @@ function getBandsInTown (artist)
                             var pTag1 = $("<p>");
                             pTag1
                                 .text(concert.venue.city +
-                                      " on " + formatDate (concert.datetime)); 
+                                      ", " + concert.venue.region +
+                                        " on " + formatDate (concert.datetime)); 
 
                             divTag
                                 .append (pTag1);
@@ -230,21 +246,32 @@ function getBandsInTown (artist)
                     h2Tag.text(artist + " will be appearing in:");
 
                     $("#concert-div")
-                        .prepend(h2Tag)
+                        .append(h2Tag)
                         .append(divTag);
 
                     // Concert data is in a <div> that is hidden by default.  Add a button to the
                     // page to tell the user there are concert dates to view and lets them view those
                     // dates.
 
-                    var cButton = $("<button>");
+                    var button = $("<button>");
 
-                    cButton
-                        .addClass("something")
+                    button
+                        .addClass("event-button button-theme")
                         .attr("value", "concert")
                         .text("UPCOMING CONCERTS");
 
-                    $("#image-main").prepend (cButton);
+//                     $("#image-main").prepend (button);
+                    $(".button-bar").prepend (button);
+
+                    // and add a button to #concert-div so the user can get that off the screen
+
+                    button = $("<button>");
+
+                    button
+                        .addClass("event-close")
+                        .text("CLOSE");
+
+                    $("#concert-div").append (button);
                 }
             })
         }
@@ -255,16 +282,91 @@ function getBandsInTown (artist)
     }
 }
 
+function doStars (imageID, numStars)
+{   // this is the code that makes stars solid or outlined for the favorites bar.  It takes parameters:
+    //
+    // imageID      GIPHY's unique id for the image.  This ID is saved as an attribute in the <i> tag
+    //              that contains the stars and used in the jQuery selector to identify the row of stars
+    //              the user has clicked on
+    // numStars     Each star in the favorite's bar has been assigned a number from 0 to 4 used to
+    //              identify which star in the row was clicked on.  It represents how much the user
+    //              likes this image.
+    //
+    // I'm using Font Awesome icons for outlined and solid stars.  The class used to identify a hollow
+    // star is "far fa-star" and a solid star is "fas fa-star".
+
+    // first set all of the <i> tag elements in the selection to display Font Awesome's outlined star
+    // icon.  Font Awesome recommends using the <i> tag to include their icons in HTML 
+
+    var iTag = $(".favorites[image=" + imageID + "]");
+
+    iTag
+        .removeClass("fas fa-star")
+        .addClass("far fa-star");
+
+    // next set all of the <i> tag elements with a value of stars <= numStars to a solid star.  jQuery
+    // doesn't recognize selectors using "<" (less than the indicated value) only "=" (equal to the
+    // indicated value).  So since I only want the star that the user clicked on and the stars to its
+    // left, I need a loop
+
+    for (var i=0; i<= numStars; i++)   
+    {   var iTag = $(".favorites[image=" + imageID + "][star=" + i  + "]");
+        iTag
+            .removeClass("far fa-star")
+            .addClass("fas fa-star");
+    }
+}
+
+function getStars (imageID)
+{
+
+}
+
+function makeFavoriteBar (imgId)
+{   // Creates a row of 5 stars to indicate the users personal preference for the image.  By default
+    // stars are hollow, indicating no preferences.
+
+    var starDiv = $("<div>");
+    var numStars = 0;
+
+    // Initialize the favorites bar (all stars are empty).  We'll call getStars() later, to fill in the
+    // stars that should be
+
+    for (var j=0; j<5; j++)
+    {   var classToAdd = "far fa-star";
+        var iTag = $("<i>");
+ 
+        iTag
+            .addClass(classToAdd)
+            .addClass("favorites")
+            .attr("image", imgId)
+            .attr("star", j)
+            .css("color", "gold");
+
+        starDiv
+            .append (iTag);
+    }
+
+    starDiv
+        .css("bottom", "0px")
+        .css("position", "absolute");
+     
+    getStars (imgId);
+
+    return starDiv;
+}
+
 function getGIPHY (getWhat, offset)
 {   // interface with GIPHY to retrieve images
 
     if (offset === undefined) offset = 0;
     // remove the GET MORE button.  The GET MORE button is the last thing added to #image-main by this
-    // function and should be the last child.  The only time GET MORE is not the last child is when
+    // function and should always be the last child.  The only time GET MORE is not the last child is when
     // #image-main is empty.
+    //
+    // All well and good, but that doesn't seem to work...grab the button by it's class name
 
-//     $("#image-main:last-child").remove();
-    $(".10-more").remove();
+    $(".ten-more").remove();
 
     // create the search string
     var URL = "http://api.giphy.com/v1/gifs/search?q=" + getWhat +
@@ -280,43 +382,75 @@ function getGIPHY (getWhat, offset)
         {   // for each image returned by the search, create a new <DIV> to hold that image and any
             // associated data
 
-            var imgArray = 
-            [   thisGIF.images.fixed_height_still.url,
-                thisGIF.images.fixed_height.url,
-            ];
-            imageURLs.push (imgArray);
-
             var newImg = $("<img>");
             newImg
                 .addClass("image")
-                .attr("src", imgArray[stillImage])
-                .attr("value", imageURLs.length - 1);
+                .attr("src", thisGIF.images.fixed_height_still.url)
+                .attr("srcStill", thisGIF.images.fixed_height_still.url)
+                .attr("srcRun", thisGIF.images.fixed_height.url);
 
-            var ratedP = $("<p>");
-            ratedP
-                .text("rated: ");
+            var p1 = $("<p>");
+            p1
+                .css("fontWeight", "bold")
+                .text(thisGIF.title);
 
-            var newDiv = $("<div>");
-            newDiv
+            var p2 = $("<p>");
+            if (thisGIF.username)
+                p2.text("created by " + thisGIF.username);
+            else
+                p2.empty();
+
+            var p3 = $("<p>");
+            p3
+                .text(thisGIF.create_datetime);
+
+            var p4 = $("<p>");
+            p4
+                .text("rated: " + thisGIF.rating);
+        
+            var textDiv = $("<div>");
+
+            textDiv
                 .addClass("image-div")
-                .append(newImg)
-                .append(ratedP);
+//                 .append(newImg)
+                .append(p1)
+                .append(p2)
+                .append(p3)
+                .append(p4)
+                .append(makeFavoriteBar(thisGIF.id))
+                .css("float", "left")
+                .css("position", "relative");
 
-            $("#image-main").append(newDiv);
+            var wrapperDiv = $("<div>");
+            wrapperDiv
+                .append(newImg)
+                .append(textDiv)
+                .css("float", "left")
+
+            $("#image-main")
+                .append(wrapperDiv);
         })
 
         // add a button to get 10 more GIFs
+        //
+        // because of the floats, this button has to be in a div
+
         var button = $("<button>");
         button
-            .addClass ("10-more")
+            .addClass ("ten-more button-theme")
             .attr("offset", (offset * 1) + 10)
             .attr("value", getWhat)
             .text("GET 10 MORE");
 
+        var div = $("<div>");
+        div
+            .append(button)
+            .css("clear", "both")
+    
         $("#image-main")
-            .append(button);
+            .append(div);
 
-        // and now, get info on the band...but only do it once
+        // and now, get info on the band...but only do it once, when the first 10 images are loaded
 
         if (offset === 0)
             getBandsInTown (getWhat);
@@ -326,14 +460,59 @@ function getGIPHY (getWhat, offset)
 
         var newP = $("<p>");
         newP
-            .text("An error occured and we are unable to display .GIFs for " + $(getWhat).attr("value"));
+            .text("An error occured and we are unable to display .GIFs for " + getWhat);
 
         $("#image-div").append(newP);
     });
 }
 
+function addFavorites (imageID, numStars)
+{   // The event handler for clicks in the favorites bar.  This function updates the array favorites[]
+    // as well as localStorage
+
+    // first, display the favorites bar with the number of stars indicated
+    doStars (imageID, numStars);
+
+    // If this image is already in the array favorites[] we'll update that element rather than create
+    // a new one
+
+    var found = false;
+
+    favorites.forEach (function (item)
+    {   if (item.id === imageID)
+        {   found = true;
+            item.rating = numStars;
+        }
+    })
+
+    // and only create a new element in favorites[] if the imageID wasn't found there
+
+    if (!found)
+    {   var image =
+        {   id: imageID,
+            rating: numStars
+        }
+
+        favorites.push (image);
+    }
+
+    // But no matter what, update localStorage
+    // convert objects in favorites[] to strings so I can write to localStorage
+
+    var favToWrite = [];
+
+    favorites.forEach(function (obj)
+    {   favToWrite.push(JSON.stringify(obj));
+    })
+
+    // and write the converted favorites[] to localStorage
+
+    localStorage.setItem("favorites", favToWrite);
+}
+
 $(document).ready(function()
-{   getButtons();
+{   getFavorites();
+    getButtons();
     displayButtons ();
 
     $("#add-button").click(addButton);
@@ -344,20 +523,36 @@ $(document).ready(function()
         // This is the event handler for the topic buttons.  That means the user clicked on one of the
         // buttons located in .button-div.  Whether this button is the same as the one just previously
         // clicked or not, it's okay to clear anything currently displayed in #image-div or #concert-div
-    
         $("#image-main").empty();
-        $("#concert-div").empty();
-        imageURLs = [];
+
+        var barDiv = $("<div>");
+        barDiv.addClass("button-bar");
+
+        $("#image-main")
+            .append(barDiv);
+
+            $("#concert-div").empty();
 
         // and get data for the button that was clicked
         getGIPHY ($(this).text());
     });
 
+    $("#concert-div")
+        .on("click", ".event-close", function()
+        {   // event handler for CLOSE button in #concert-div
+
+            $("#concert-div").css("display", "none");
+        })
+
     $("#image-main")
-        .on("click", ".10-more", function()
+        .on("click", ".event-button", function()
+        {   // event handler for UPCOMING EVENTS button
+
+            $("#concert-div").css("display", "block");
+        })
+        .on("click", ".ten-more", function()
         {   // generic event handler for topic buttons
 
-//             GIPHYoffset += 10;
             getGIPHY ($(this).attr("value"), $(this).attr("offset"));
         })
         .on("mouseenter", ".image", function()
@@ -366,10 +561,16 @@ $(document).ready(function()
             // method, bit it requires separate handlers for .mouseenter() and .mouseleave()
             // any way.)
 
-            $(this).attr("src", imageURLs[$(this).attr("value")] [runImage]);
+            $(this).attr("src", $(this).attr("srcRun"));
         })
         .on("mouseleave", ".image", function()
-        {   $(this).attr("src", imageURLs[$(this).attr("value")] [stillImage]);
+        {
+            $(this).attr("src", $(this).attr("srcStill"));
+        })
+        .on("click", ".favorites", function()
+        {   // generic event handler for clicks in the "favorites" bar
+            addFavorites($(this).attr("image"), $(this).attr("star"));
+//             doStars ($(this).parent(), $(this).attr("star"));
+//             doStars ($(this).attr("image"), $(this).attr("star"));
         });
-
 })
