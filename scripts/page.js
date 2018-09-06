@@ -294,7 +294,7 @@ function doStars (imageID, numStars)
     //
     // I'm using Font Awesome icons for outlined and solid stars.  The class used to identify a hollow
     // star is "far fa-star" and a solid star is "fas fa-star".
-
+console.log("doStars(", imageID, ", ", numStars, ")");
     // first set all of the <i> tag elements in the selection to display Font Awesome's outlined star
     // icon.  Font Awesome recommends using the <i> tag to include their icons in HTML 
 
@@ -314,12 +314,76 @@ function doStars (imageID, numStars)
         iTag
             .removeClass("far fa-star")
             .addClass("fas fa-star");
+console.log("for: ", i);
     }
 }
 
 function getStars (imageID)
-{
+{   // Examine array favorites[] for this image and if found, update the classes on the <i> elements
+    // to indicate the users rating. 
 
+//     var found = false;
+console.log("getStars(", imageID, ")");
+    favorites.forEach (function (item)
+    {   if (item.id === imageID)
+        {   // found = true;
+console.log("item:    ", item.id);
+console.log(item.rating);
+                        doStars (imageID, item.rating);
+// this seems to be working, but the changes are not reflected on the screen...so kill the script
+// here so I can see if it works or not...
+// var one = 0
+// var two = one / one;
+// console.log(item.glochester());
+// I need to learn how to use Chrome's debugger
+            return;
+        }
+    })
+}
+
+function addFavorites (imageID, numStars)
+{   // The event handler for clicks in the favorites bar.  This function updates the array favorites[]
+    // as well as localStorage
+
+    // first, display the favorites bar with the number of stars indicated
+    doStars (imageID, numStars);
+
+    // If this image is already in the array favorites[] we'll update that element rather than create
+    // a new one
+
+    var found = false;
+
+    favorites.forEach (function (item)
+    {   if (item.id === imageID)
+        {   found = true;
+            item.rating = numStars;
+        }
+    })
+
+    // and only create a new element in favorites[] if the imageID wasn't found there
+
+    if (!found)
+    {   var image =
+        {   id: imageID,
+            rating: numStars
+        }
+
+        favorites.push (image);
+    }
+console.log("addFavorites()");
+console.log(favorites);
+    // But no matter what, update localStorage
+    // convert objects in favorites[] to strings so I can write to localStorage
+
+    var favToWrite = [];
+
+    favorites.forEach(function (obj)
+    {   favToWrite.push(JSON.stringify(obj));
+    })
+
+    // and write the converted favorites[] to localStorage
+
+    localStorage.setItem("favorites", favToWrite);
 }
 
 function makeFavoriteBar (imgId)
@@ -351,7 +415,7 @@ function makeFavoriteBar (imgId)
         .css("bottom", "0px")
         .css("position", "absolute");
      
-    getStars (imgId);
+//     getStars (imgId);
 
     return starDiv;
 }
@@ -420,7 +484,7 @@ function getGIPHY (getWhat, offset)
                 .append(makeFavoriteBar(thisGIF.id))
                 .css("float", "left")
                 .css("position", "relative");
-
+    
             var wrapperDiv = $("<div>");
             wrapperDiv
                 .append(newImg)
@@ -429,6 +493,20 @@ function getGIPHY (getWhat, offset)
 
             $("#image-main")
                 .append(wrapperDiv);
+
+// console.log("getGIPHY()");
+            // Apparently I can't modify the classes of the <i> tags (the stars used to indicate the
+            // users preferences) before they are on the screen.  That is inconsistant with the above
+            // code that adds classes to a <div> that isn't on the screen.  But hey, this is JavaScript.
+            // Consistancy isn't a key component.
+            //
+            // I guess there is a difference.  In the code above, I get my rference to the <div> by
+            // creating it.  I't in memory but in the DOM.  getStars() uses a jQuery selector to
+            // get a reference to the <i> elements.  That's the difference...the jQuery selector
+            // is searching the DOM and although those elements exist in memory, they are not yet
+            // in the DOM.
+
+            getStars (thisGIF.id);
         })
 
         // add a button to get 10 more GIFs
@@ -464,50 +542,6 @@ function getGIPHY (getWhat, offset)
 
         $("#image-div").append(newP);
     });
-}
-
-function addFavorites (imageID, numStars)
-{   // The event handler for clicks in the favorites bar.  This function updates the array favorites[]
-    // as well as localStorage
-
-    // first, display the favorites bar with the number of stars indicated
-    doStars (imageID, numStars);
-
-    // If this image is already in the array favorites[] we'll update that element rather than create
-    // a new one
-
-    var found = false;
-
-    favorites.forEach (function (item)
-    {   if (item.id === imageID)
-        {   found = true;
-            item.rating = numStars;
-        }
-    })
-
-    // and only create a new element in favorites[] if the imageID wasn't found there
-
-    if (!found)
-    {   var image =
-        {   id: imageID,
-            rating: numStars
-        }
-
-        favorites.push (image);
-    }
-
-    // But no matter what, update localStorage
-    // convert objects in favorites[] to strings so I can write to localStorage
-
-    var favToWrite = [];
-
-    favorites.forEach(function (obj)
-    {   favToWrite.push(JSON.stringify(obj));
-    })
-
-    // and write the converted favorites[] to localStorage
-
-    localStorage.setItem("favorites", favToWrite);
 }
 
 $(document).ready(function()
