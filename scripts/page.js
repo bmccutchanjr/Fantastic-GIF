@@ -61,9 +61,27 @@ function getFavorites ()
 {   // getFavorites() is only called when the page is loaded.  It's only function is to initialize favorites[]
     // from window.localStorage
 
-//     if (localStorage.getItem("favorites"))
-//         favorites = window.localStorage.getItem("favorites").split(",");
-    favorites = [];
+    var tFav = [];
+    if (localStorage.getItem("favorites"))
+        var tFav = window.localStorage.getItem("favorites").split(",");
+    
+    var tLength = tFav.length;
+
+    for (i=0; i<tLength; i+=2)
+    {   // The above split almost works.  Arrays are stored as an array of objects -- and objects are
+        // also comma-delimited.  So .split(",") actually returns an array made up of pieces and parts
+        // of my objects.  That's okay because I know each and every object has two properties -- no
+        // more and no less.  So I have to concatenate every other element in my temporary array.
+        // Objects are comma-delimited, so I have to put that back also.
+        //
+        // Because I need two elements from tFav[] for each iteration of the loop, increment the index
+        // by 2.
+
+        var tThis = tFav[i] + "," + tFav[i+1];
+
+        favorites.push(JSON.parse(tThis));
+
+    }
 }
 
 function displayButtons ()
@@ -82,6 +100,18 @@ function displayButtons ()
         $(".button-div").append(newP);
 
         return;
+    }
+
+    if (favorites.length)
+    {   // If the user has indicated favorite images, add a button to display favorites
+
+        var newButton = $("<button>");
+        
+        newButton
+            .addClass("favorites-button")
+            .text("My Favorites");
+
+        $(".button-div").append(newButton);
     }
 
     // If the script got to this point, there are elements in button[] representing the user-defined
@@ -189,9 +219,9 @@ function getBandsInTown (artist)
             newLink
                 .addClass("button-theme")
                 .attr("href", response.facebook_page_url)
+                .attr("target", "_blank")
                 .text(artist + " on FaceBook");
             
-//             $("#image-main").prepend(newLink);
             $(".button-bar").prepend(newLink);
         }
 
@@ -294,7 +324,7 @@ function doStars (imageID, numStars)
     //
     // I'm using Font Awesome icons for outlined and solid stars.  The class used to identify a hollow
     // star is "far fa-star" and a solid star is "fas fa-star".
-console.log("doStars(", imageID, ", ", numStars, ")");
+
     // first set all of the <i> tag elements in the selection to display Font Awesome's outlined star
     // icon.  Font Awesome recommends using the <i> tag to include their icons in HTML 
 
@@ -314,7 +344,6 @@ console.log("doStars(", imageID, ", ", numStars, ")");
         iTag
             .removeClass("far fa-star")
             .addClass("fas fa-star");
-console.log("for: ", i);
     }
 }
 
@@ -322,20 +351,13 @@ function getStars (imageID)
 {   // Examine array favorites[] for this image and if found, update the classes on the <i> elements
     // to indicate the users rating. 
 
-//     var found = false;
-console.log("getStars(", imageID, ")");
     favorites.forEach (function (item)
     {   if (item.id === imageID)
-        {   // found = true;
-console.log("item:    ", item.id);
-console.log(item.rating);
-                        doStars (imageID, item.rating);
-// this seems to be working, but the changes are not reflected on the screen...so kill the script
-// here so I can see if it works or not...
-// var one = 0
-// var two = one / one;
-// console.log(item.glochester());
-// I need to learn how to use Chrome's debugger
+        {   // If the image ID is found in favorites[], set the favorite bar to display the appropriate
+            // number of stars.  Since it was found in this iteration, there's no need to look at
+            // any other elements in favorites[], so return
+
+            doStars (imageID, item.rating);
             return;
         }
     })
@@ -370,10 +392,10 @@ function addFavorites (imageID, numStars)
 
         favorites.push (image);
     }
-console.log("addFavorites()");
-console.log(favorites);
-    // But no matter what, update localStorage
-    // convert objects in favorites[] to strings so I can write to localStorage
+
+    // And finally, write the favorites[] to localStorage.  I can't do that directly because
+    // elements in favorites[] are objects.  I need to convert those to strings to get/set them
+    // properly
 
     var favToWrite = [];
 
@@ -415,9 +437,95 @@ function makeFavoriteBar (imgId)
         .css("bottom", "0px")
         .css("position", "absolute");
      
-//     getStars (imgId);
-
     return starDiv;
+}
+
+function showImage(GIF)
+{   // display this image
+
+    var newImg = $("<img>");
+    newImg
+        .addClass("image")
+        .attr("src", GIF.images.fixed_height_still.url)
+        .attr("srcStill", GIF.images.fixed_height_still.url)
+        .attr("srcRun", GIF.images.fixed_height.url);
+
+    var p1 = $("<p>");
+    p1
+        .css("fontWeight", "bold")
+        .text(GIF.title);
+
+    var p2 = $("<p>");
+    if (GIF.username)
+        p2.text("created by " + GIF.username);
+    else
+        p2.empty();
+
+// Doesn't appear to be any data in this field, so don't bother with it
+//     var p3 = $("<p>");
+//     p3
+//         .text(GIF.create_datetime);
+
+    var p4 = $("<p>");
+    p4
+        .text("rated: " + GIF.rating);
+
+    var textDiv = $("<div>");
+
+    textDiv
+        .addClass("image-div")
+        .append(p1)
+        .append(p2)
+//         .append(p3)
+        .append(p4)
+        .append(makeFavoriteBar(GIF.id))
+        .css("float", "left")
+        .css("position", "relative");
+     
+    var wrapperDiv = $("<div>");
+    wrapperDiv
+        .append(newImg)
+        .append(textDiv)
+        .css("float", "left")
+
+    $("#image-main")
+        .append(wrapperDiv);
+
+    // I can't modify the classes of the <i> tags (the stars used to indicate the users preferences)
+    // before they are on the screen.  getStars() uses a jQuery selector to get a reference to the <i>
+    // elements.  The jQuery selector is searching the DOM and although those elements exist in memory,
+    // they are not yet in the DOM.
+
+    getStars (GIF.id);
+}
+
+function showFavorites()
+{   // Show the images that have been marked as favorites
+
+alert ("showFavorites()");
+
+    favorites.forEach(function(fObj)
+    {   // This search gets one image, the image identified by fObj.id
+        
+        var URL = "http://api.giphy.com/v1/gifs/" + fObj.id +
+                  "?api_key=" + myAPIKey;
+        $.get(URL)
+        .then( function(response)
+        {   // got data from GIPHY...now process it
+              
+            showImage(response["data"]);
+        })
+              
+        .catch(function()
+        {   // some kind of error occured...can't display any images
+              
+            var newP = $("<p>");
+            newP
+                .text("An error occured and we are unable to display .GIFs for " + fObj.id);
+              
+            $("#image-div").append(newP);
+        });
+    });
 }
 
 function getGIPHY (getWhat, offset)
@@ -446,68 +554,8 @@ function getGIPHY (getWhat, offset)
         {   // for each image returned by the search, create a new <DIV> to hold that image and any
             // associated data
 
-            var newImg = $("<img>");
-            newImg
-                .addClass("image")
-                .attr("src", thisGIF.images.fixed_height_still.url)
-                .attr("srcStill", thisGIF.images.fixed_height_still.url)
-                .attr("srcRun", thisGIF.images.fixed_height.url);
-
-            var p1 = $("<p>");
-            p1
-                .css("fontWeight", "bold")
-                .text(thisGIF.title);
-
-            var p2 = $("<p>");
-            if (thisGIF.username)
-                p2.text("created by " + thisGIF.username);
-            else
-                p2.empty();
-
-            var p3 = $("<p>");
-            p3
-                .text(thisGIF.create_datetime);
-
-            var p4 = $("<p>");
-            p4
-                .text("rated: " + thisGIF.rating);
-        
-            var textDiv = $("<div>");
-
-            textDiv
-                .addClass("image-div")
-//                 .append(newImg)
-                .append(p1)
-                .append(p2)
-                .append(p3)
-                .append(p4)
-                .append(makeFavoriteBar(thisGIF.id))
-                .css("float", "left")
-                .css("position", "relative");
-    
-            var wrapperDiv = $("<div>");
-            wrapperDiv
-                .append(newImg)
-                .append(textDiv)
-                .css("float", "left")
-
-            $("#image-main")
-                .append(wrapperDiv);
-
-// console.log("getGIPHY()");
-            // Apparently I can't modify the classes of the <i> tags (the stars used to indicate the
-            // users preferences) before they are on the screen.  That is inconsistant with the above
-            // code that adds classes to a <div> that isn't on the screen.  But hey, this is JavaScript.
-            // Consistancy isn't a key component.
-            //
-            // I guess there is a difference.  In the code above, I get my rference to the <div> by
-            // creating it.  I't in memory but in the DOM.  getStars() uses a jQuery selector to
-            // get a reference to the <i> elements.  That's the difference...the jQuery selector
-            // is searching the DOM and although those elements exist in memory, they are not yet
-            // in the DOM.
-
-            getStars (thisGIF.id);
-        })
+            showImage(thisGIF);
+        });
 
         // add a button to get 10 more GIFs
         //
@@ -551,25 +599,33 @@ $(document).ready(function()
 
     $("#add-button").click(addButton);
 
-    $(".button-div").on ("click", "button", function()
-    {   // generic event handler for topic buttons
+    $(".button-div")
+        .on ("click", ".button-theme", function()
+        {   // generic event handler for topic buttons
 
-        // This is the event handler for the topic buttons.  That means the user clicked on one of the
-        // buttons located in .button-div.  Whether this button is the same as the one just previously
-        // clicked or not, it's okay to clear anything currently displayed in #image-div or #concert-div
-        $("#image-main").empty();
+            // This is the event handler for the topic buttons.  That means the user clicked on one of the
+            // buttons located in .button-div.  Whether this button is the same as the one just previously
+            // clicked or not, it's okay to clear anything currently displayed in #image-div or #concert-div
+            $("#image-main").empty();
 
-        var barDiv = $("<div>");
-        barDiv.addClass("button-bar");
+            var barDiv = $("<div>");
+            barDiv.addClass("button-bar");
 
-        $("#image-main")
-            .append(barDiv);
+            $("#image-main")
+                .append(barDiv);
 
-            $("#concert-div").empty();
+                $("#concert-div").empty();
 
-        // and get data for the button that was clicked
-        getGIPHY ($(this).text());
-    });
+            // and get data for the button that was clicked
+            getGIPHY ($(this).text());
+        })
+        .on("click", ".favorites-button", function()
+        {   // display favorite images
+
+            $("#image-main").empty();
+
+            showFavorites();
+        });
 
     $("#concert-div")
         .on("click", ".event-close", function()
@@ -604,7 +660,5 @@ $(document).ready(function()
         .on("click", ".favorites", function()
         {   // generic event handler for clicks in the "favorites" bar
             addFavorites($(this).attr("image"), $(this).attr("star"));
-//             doStars ($(this).parent(), $(this).attr("star"));
-//             doStars ($(this).attr("image"), $(this).attr("star"));
         });
 })

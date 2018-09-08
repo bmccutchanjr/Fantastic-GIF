@@ -70,7 +70,7 @@ aside hr
 }
 
 /* aside button, main button, main a */
-.button-theme
+.button-theme, .favorites-button
 {   background: blue;
     border: 1px solid darkblue;
     border-radius: 5px;
@@ -82,8 +82,14 @@ aside hr
     text-decoration: none;
 }
 
+.favorites-button
+{   background: darkblue;
+    border-color: black;
+    margin-bottom: 10px;
+}
+
 /* aside button:hover, main button:hover, main a:hover */
-.button-theme:hover
+.button-theme:hover, .favorites-button:hover
 {   background: white;
     color: darkblue;
 }
@@ -115,9 +121,11 @@ main
 #image-main img
 {   border: 1px solid black;
     border-radius: 2px;
+    display: block;
     float: left;
     margin-right: 10px;
     margin-bottom: 10px;
+    max-width: 100%;
     padding: 2px;
 }
 
