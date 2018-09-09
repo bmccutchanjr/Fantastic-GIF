@@ -47,7 +47,8 @@ h1
 {   font-family: var(--font-family);
 }
 
-section
+/* section */
+main
 {   margin: 25px;
 }
 
@@ -100,7 +101,8 @@ aside hr
 /* begin style for main div
 */
 
-main
+/* main */
+section
 {   background: rgba(0, 0, 255, 0.5);
     border: 2px solid black;
     border-radius: 2px;

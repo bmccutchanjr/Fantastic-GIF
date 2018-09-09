@@ -1,5 +1,9 @@
-var buttons = [];           // array of buttons
-var favorites = [];         // array of objects identifying favorite images
+var buttons =               // An array of buttons representing the users custom topics
+    ["Janis Joplin",
+     "Gretchen Wilson",
+     "Jow Bonamassa"
+    ];
+var favorites = [];         // An array identifying favorite images.  The elements of the array are objects
 
 var myAPIKey = "3AFkSx6nd8NPugiU5xJtbRdNWYAeS83c";
 
