@@ -232,12 +232,38 @@ function getBandsInTown (artist)
             
             var newLink = $("<a>");
 
+            // I dressed up this link to look and act like the other buttons on the page.  It's the only
+            // link, and looks funny as a text element.  But because it's a text element it does not align
+            // the same as the buttons do and overlapped the GIF slightly.  So I put it and the UPCOMING
+            // EVENTS button in a <div> at the top of #image-main.  If the UPCOMING EVENTS button exists,
+            // this link alignes exactly like the button.  If the button does not exist, the text aligns
+            // at the top of the <div> but the border and padding are outside the <div> above.  At least
+            // it doesn't overlap the image any longer.
+            //
+            // So I could fix this issue by adding CSS to the link to align it like the button.  So far
+            // so good.  Problem is that CSS is always there.  If the button exists, this link is
+            // displayed slightly lower -- because I told it to -- and overlays the image slighty once
+            // again.
+            //  
+            // I can fix that issue by making this link a button.  But the only reference I can find to
+            // loading a new page on a button click uses window.location.  It will replace this page rather
+            // than load in a new tab or window.  Don't want that even more than I don't want the
+            // alignmnent issue.
+            //
+            // I could go ahead and add the style to re-align the link here, and remove it when I
+            // create the UPCOMING EVENTS button.  But that doesn't seem like the correct answer either.
+            // There should be a CSS setting that aligns the link the same as the button, but I can't
+            // find it.
+            //
+            // Guess I have to live with it.  You'll probably only notice it if you're reading these
+            // comments any way.
+
             newLink
                 .addClass("button-theme")
                 .attr("href", response.facebook_page_url)
                 .attr("target", "_blank")
-                .css("position", "relative")
-                .css("top", "6px")
+//                 .css("position", "relative")
+//                 .css("top", "6px")
                 .text(artist + " on FaceBook");
             
             $(".button-bar").prepend(newLink);
@@ -516,7 +542,8 @@ function showFavorites()
     favorites.forEach(function(fObj)
     {   // This search gets one image, the image identified by fObj.id
         
-        var URL = "http://api.giphy.com/v1/gifs/" + fObj.id +
+//         var URL = "http://api.giphy.com/v1/gifs/" + fObj.id +
+        var URL = "https://api.giphy.com/v1/gifs/" + fObj.id +
                   "?api_key=" + myAPIKey;
         $.get(URL)
         .then( function(response)
@@ -550,7 +577,8 @@ function getGIPHY (getWhat, offset)
     $(".ten-more").remove();
 
     // create the search string
-    var URL = "http://api.giphy.com/v1/gifs/search?q=" + getWhat +
+//     var URL = "http://api.giphy.com/v1/gifs/search?q=" + getWhat +
+    var URL = "https://api.giphy.com/v1/gifs/search?q=" + getWhat +
         "&api_key=" + myAPIKey +
         "&limit=10&offset=" + offset;
 
