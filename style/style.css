@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Berkshire+Swash');
-@import url('https://fonts.googleapis.com/css?family=Pacifico');
+/* @import url('https://fonts.googleapis.com/css?family=Pacifico'); */
 
 *
 {   box-sizing: border-box;
@@ -32,6 +32,7 @@ header
     font-family: var(--font-family);
     font-size: 40px;
     font-weight: bold;
+    margin-bottom: 10px;
     padding: 10px;
     position: relative;
     text-align: center;
@@ -53,26 +54,47 @@ h1
 
 /* section */
 main
-{   margin: 25px;
+{   /* margin: 25px; */
+    position: relative;
 }
 
 /* begin style for aside
 */
 
 aside
-{   background: rgba(0, 255, 0, 0.5);
-    border: 2px solid black;
-    border-radius: 2px;
+{   /* background: rgba(0, 255, 0, 0.5); */
+    /* border: 2px solid var(--head-brd-color); */
+    /* border-radius: 2px; */
     height: 100%;
     float: left;
-    margin-right: 25px;
-    width: 150px;
+    /* margin-right: 25px; */
+    margin-right: 5%;
+    /* width: 150px; */
+    width: 15%;
 }
 
+.form-div
+{   /* background: rgba(0, 255, 0, 0.5); */
+    border: 2px solid var(--head-brd-color);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    padding: 2px;
+}
+
+#button-to-add
+{   width: 100%;
+}
+
+.button-div button
+{   display: block;
+}
+
+/*
 aside hr
 {   margin-bottom: 10px;
     margin-top: 10px;
 }
+*/
 
 /* aside button, main button, main a */
 .button-theme, .favorites-button
@@ -83,6 +105,7 @@ aside hr
     font-size: 14px;
     font-weight: bold;
     margin: 2px;
+    max-width: 100%;
     padding: 5px;
     text-decoration: none;
 }
@@ -90,13 +113,17 @@ aside hr
 .favorites-button
 {   background: darkblue;
     border-color: black;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 /* aside button:hover, main button:hover, main a:hover */
 .button-theme:hover, .favorites-button:hover
 {   background: white;
     color: darkblue;
+}
+
+.button-bar
+{   height: 32px;
 }
 
 /* end style for aside
@@ -107,11 +134,14 @@ aside hr
 
 /* main */
 section
-{   background: rgba(0, 0, 255, 0.5);
-    border: 2px solid black;
-    border-radius: 2px;
+{   /* background: rgba(0, 0, 255, 0.5); */
+    /* border: 2px solid black; */
+    /* border-radius: 2px; */
     float: left;
-    width: 70%;
+    /* width: 70%; */
+    /* position: absolute; */
+    /* right: 0px; */
+    width: 80%;
     /* padding: 25px; */
 }
 
@@ -176,7 +206,7 @@ body, html
 }
 
 .wrapper
-{   background: rgba(0, 255, 255, 0.5);
+{   /* background: rgba(0, 255, 255, 0.5); */
     height: auto;
     margin: 0px;
     margin-bottom: -43px;

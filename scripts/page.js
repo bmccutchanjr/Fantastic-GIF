@@ -1,7 +1,7 @@
 var buttons =               // An array of buttons representing the users custom topics
     ["Janis Joplin",
      "Gretchen Wilson",
-     "Jow Bonamassa"
+     "Joe Bonamassa"
     ];
 var favorites = [];         // An array identifying favorite images.  The elements of the array are objects
 
