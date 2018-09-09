@@ -8,13 +8,17 @@
 :root
 {   --font-family: "Berkshire Swash", cursive;
     /* --font-family: "Pacifico", cursive; */
-    --head-bg-color: green;
-    --head-brd-color: #004400;
-    --text-color: black;
+    /* --head-bg-color: green; */
+    /* --head-brd-color: #004400; */
+    --head-bg-color: lightgray;
+    --head-brd-color: #333333;
+    /* --text-color: black; */
+    --text-color: #333333;
 }
 
 body
-{   color: var(--text-color);
+{   background: #efefef;
+    color: var(--text-color);
     /* font-family: var(--font-family); */
     font-family: sans-serif;
     margin: 0px;
@@ -26,7 +30,7 @@ header
     border: 2px solid var(--head-brd-color);
     border-radius: 2px;
     font-family: var(--font-family);
-    font-size: 32px;
+    font-size: 40px;
     font-weight: bold;
     padding: 10px;
     position: relative;
@@ -37,8 +41,8 @@ header
 {   font-family: sans-serif;
     font-size: 12px;
     font-weight: normal;
-    bottom: 0px;
-    right: 0px;
+    bottom: 10px;
+    right: 10px;
     position: absolute;
 }
 
@@ -175,21 +179,26 @@ body, html
 {   background: rgba(0, 255, 255, 0.5);
     height: auto;
     margin: 0px;
-    margin-bottom: -31px;
+    margin-bottom: -43px;
     min-height: 100%;
     overflow: auto;
-    padding: 25px;
+    /* padding: 25px; */
+    padding: 10px;
 }
 
 .push
 {   background: yellow;
     clear: both;
-    height: 31px;
+    height: 43px;
 }
 
 footer
 {   background: var(--head-bg-color);
+    border: 1px solid var(--head-brd-color);
+    border-radius: 2px;
+    color: var(--text-color);
     font-size: 10px;
-    padding: 10px;
+    margin: 10px;
+    padding: 5px;
     text-align: center;
 }
