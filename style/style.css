@@ -254,6 +254,34 @@ footer
 */
 
 @media screen and (max-width: 768px)
-{
+{   .GIPHY
+    {   position: relative;
+    }
     
+    aside
+    {   width: 100%;
+    }
+
+    .form-div
+    {   float: left;
+        width: 100%;
+    }
+
+    .button-div
+    {   float: left;
+        width: 100%;
+    }
+
+    .button-div button
+    {   display: inline;
+    }
+
+    main, #image-main
+    {   clear: both;
+        width: 100%;
+    }
+
+    .image-main img
+    {   width: 100%;
+    }
 }
