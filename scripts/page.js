@@ -26,26 +26,39 @@ function flashIt (elem, num)
     // It's possible that the list of buttons can get quite long and spotting an existing button
     // with the selected text might be difficult.  So quickly alternate the background of the selected
     // button element to make it stand out.
+    //
+    // I can't simply use .css() to modify the style settings for the buttons.  That does achieve the
+    // effect of flashing the button, but it does it by adding the equivalent of in-line style to the
+    // button.  And that overrides the :hover style as well.  Once a button has been flashed, the :hover
+    // no longer works.  I need to add code to the style sheet for the alternate background (basically
+    // repeating the :hoover style) and the add and remove that class to acheive the desired effect.
 
-    if (num === undefined) num = 9;
+    if (num === undefined)
+    {   // To make this code more scalable, only flashIt() will pass a value for num to flashIt().
+        // That way I can control the number of times the buttoms background will alternate here and no
+        // other function needs to know what the initial value for num should be.  That way I only need
+        // modify this 1 loine of code if I want to tweak it.
+        //
+        // num controls how many time the background alternate, and thus how long the flashing will
+        // last.  Roughly 1 second.
+
+        num = 9;
+
+        // I also want to clear whatever was entered in the <input> field
+        $("#button-to-add").val("");
+    }
     if (num === 0) return;
 
     if ((num % 2) != 0)
-    {   $(elem)
-            .css("background-color", "blue")
-            .css("color", "white");
-    }
+        $(elem).removeClass("flash-it-theme-light");
     else
-    {   $(elem)
-        .css("background-color", "white")
-        .css("color", "darkblue");
-    }
+        $(elem).addClass("flash-it-theme-light");
 
     setTimeout (function()
     {   // If I try to decriment num in the function call to flashIt() (ie: flashIt (function(), num--))
         // an undefined value is passed.  Since I test for an undefined value above (I'm doing that to
         // improve the readability of the code -- after all why does any other function in the script need
-        // to know how many times to flash the button) num always get set to 10.  Hello infinite loop!  So
+        // to know how many times to flash the button) num always get set to 9.  Hello infinite loop!  So
         // I have to decriment num here...
         num--;
 
@@ -438,7 +451,9 @@ function makeFavoriteBar (imgId)
     }
 
     starDiv
-        .css("bottom", "0px")
+        .css("bottom", "-15px")
+//         .css("height", "18px")
+//         .css("margin-top", "50px")
         .css("position", "absolute");
      
     return starDiv;

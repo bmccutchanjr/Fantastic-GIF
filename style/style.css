@@ -122,6 +122,11 @@ aside hr
     /* margin-bottom: 10px; */
 }
 
+.flash-it-theme-light
+{   background: white;
+    color: var(--head-brd-color);
+}
+
 /* aside button:hover, main button:hover, main a:hover */
 .button-theme:hover, .favorites-button:hover
 {   background: white;
@@ -159,6 +164,11 @@ section
     margin-bottom: 25px;
     margin-right: 25px;
     width: 100%;
+}
+
+.image-div p
+{   margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 #image-main img
@@ -238,4 +248,12 @@ footer
     margin: 10px;
     padding: 5px;
     text-align: center;
+}
+
+/* media queries for responsive layout
+*/
+
+@media screen and (max-width: 768px)
+{
+    
 }
