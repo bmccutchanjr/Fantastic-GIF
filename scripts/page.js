@@ -601,7 +601,10 @@ $(document).ready(function()
     getButtons();
     displayButtons ();
 
-    $("#add-button").click(addButton);
+    $("#add-button").on("click", function(event)
+    {   event.preventDefault();
+        addButton();
+    });
 
     $(".button-div")
         .on ("click", ".button-theme", function()
