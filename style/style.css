@@ -98,8 +98,12 @@ aside hr
 
 /* aside button, main button, main a */
 .button-theme, .favorites-button
-{   background: blue;
-    border: 1px solid darkblue;
+{   /* background: blue; */
+    /* border: 1px solid darkblue; */
+    /* background: var(--head-brd-color); */
+    /* border: 1px solid var(--head-brd-color); */
+    background: gray;
+    border: 1px solid gray;
     border-radius: 5px;
     color: white;
     font-size: 14px;
@@ -111,15 +115,18 @@ aside hr
 }
 
 .favorites-button
-{   background: darkblue;
-    border-color: black;
+{   /* background: darkblue; */
+    /* border-color: black; */
+    background: var(--head-brd-color);
+    border-color: var(--head-brd-color);
     /* margin-bottom: 10px; */
 }
 
 /* aside button:hover, main button:hover, main a:hover */
 .button-theme:hover, .favorites-button:hover
 {   background: white;
-    color: darkblue;
+    /* color: darkblue; */
+    color: var(--head-brd-color);
 }
 
 .button-bar
