@@ -85,19 +85,19 @@ function getFavorites ()
     var tLength = tFav.length;
 
     for (i=0; i<tLength; i+=2)
-    {   // The above split almost works.  Arrays are stored as an array of objects -- and objects are
-        // also comma-delimited.  So .split(",") actually returns an array made up of pieces and parts
-        // of my objects.  That's okay because I know each and every object has two properties -- no
-        // more and no less.  So I have to concatenate every other element in my temporary array.
-        // Objects are comma-delimited, so I have to put that back also.
+    {   // The above split almost works.  favorites[] is an array of objects and is converted to a
+        // sttring for localStorage.setItem().  Both arrays and objects are representes by a comma-delimited
+        // list.  So .split(",") actually returns an array made up of pieces and parts of my objects.
+        // That's okay because I know each and every object has two properties -- no more and no less.  I
+        // just need to concatenate every other element in tFav[] to properly format for JSON.parse().
+        // And because objects are comma-delimited, I have to put that back also.
         //
-        // Because I need two elements from tFav[] for each iteration of the loop, increment the index
+        // And because I need two elements from tFav[] for each iteration of the loop, increment the index
         // by 2.
 
         var tThis = tFav[i] + "," + tFav[i+1];
 
         favorites.push(JSON.parse(tThis));
-
     }
 }
 
@@ -220,8 +220,7 @@ function getBandsInTown (artist)
 {   // interface with BandsInTown.com to get data for the band.  I'm thinking websites and upcoming
     // tour dates.
 
-    var URL = "https://rest.bandsintown.com/artists/" +
-        artist +
+    var URL = "https://rest.bandsintown.com/artists/" + artist +
         "?app_id=codingbootcamp";
 
     $.get(URL)
@@ -237,6 +236,8 @@ function getBandsInTown (artist)
                 .addClass("button-theme")
                 .attr("href", response.facebook_page_url)
                 .attr("target", "_blank")
+                .css("position", "relative")
+                .css("top", "6px")
                 .text(artist + " on FaceBook");
             
             $(".button-bar").prepend(newLink);
@@ -307,7 +308,6 @@ function getBandsInTown (artist)
                         .attr("value", "concert")
                         .text("UPCOMING CONCERTS");
 
-//                     $("#image-main").prepend (button);
                     $(".button-bar").prepend (button);
 
                     // and add a button to #concert-div so the user can get that off the screen
@@ -325,7 +325,7 @@ function getBandsInTown (artist)
     })
     .catch()
     {   // something didn't work right.  Maybe this is an error -- maybe there is no data for this
-        // artist
+        // artist.  There should be some code here...
     }
 }
 
@@ -452,8 +452,6 @@ function makeFavoriteBar (imgId)
 
     starDiv
         .css("bottom", "-15px")
-//         .css("height", "18px")
-//         .css("margin-top", "50px")
         .css("position", "absolute");
      
     return starDiv;
@@ -480,11 +478,6 @@ function showImage(GIF)
     else
         p2.empty();
 
-// Doesn't appear to be any data in this field, so don't bother with it
-//     var p3 = $("<p>");
-//     p3
-//         .text(GIF.create_datetime);
-
     var p4 = $("<p>");
     p4
         .text("rated: " + GIF.rating);
@@ -495,7 +488,6 @@ function showImage(GIF)
         .addClass("image-div")
         .append(p1)
         .append(p2)
-//         .append(p3)
         .append(p4)
         .append(makeFavoriteBar(GIF.id))
         .css("float", "left")
@@ -520,8 +512,6 @@ function showImage(GIF)
 
 function showFavorites()
 {   // Show the images that have been marked as favorites
-
-alert ("showFavorites()");
 
     favorites.forEach(function(fObj)
     {   // This search gets one image, the image identified by fObj.id
@@ -669,9 +659,8 @@ $(document).ready(function()
         })
         .on("mouseenter", ".image", function()
         {   // It appears jQuery does not support a single method for "hover", but rather uses
-            // .mouseenter() end .mouseleave() events.  (Actually jQuery does have a .hover()
-            // method, bit it requires separate handlers for .mouseenter() and .mouseleave()
-            // any way.)
+            // .mouseenter() end .mouseleave() events.  (Actually there is a .hover() method, but
+            // it requires separate handlers for .mouseenter() and .mouseleave() any way.)
 
             $(this).attr("src", $(this).attr("srcRun"));
         })

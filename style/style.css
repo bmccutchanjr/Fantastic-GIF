@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Berkshire+Swash');
-/* @import url('https://fonts.googleapis.com/css?family=Pacifico'); */
 
 *
 {   box-sizing: border-box;
@@ -7,19 +6,14 @@
 
 :root
 {   --font-family: "Berkshire Swash", cursive;
-    /* --font-family: "Pacifico", cursive; */
-    /* --head-bg-color: green; */
-    /* --head-brd-color: #004400; */
     --head-bg-color: lightgray;
     --head-brd-color: #333333;
-    /* --text-color: black; */
     --text-color: #333333;
 }
 
 body
 {   background: #efefef;
     color: var(--text-color);
-    /* font-family: var(--font-family); */
     font-family: sans-serif;
     margin: 0px;
     padding: 0px;
@@ -47,35 +41,27 @@ header
     position: absolute;
 }
 
-/* h1, h2 */
 h1
 {   font-family: var(--font-family);
 }
 
-/* section */
 main
-{   /* margin: 25px; */
-    position: relative;
+{   position: relative;
 }
 
-/* begin style for aside
-*/
+/*                                  */
+/* begin style for aside            */
+/*                                  */
 
 aside
-{   /* background: rgba(0, 255, 0, 0.5); */
-    /* border: 2px solid var(--head-brd-color); */
-    /* border-radius: 2px; */
-    height: 100%;
+{   height: 100%;
     float: left;
-    /* margin-right: 25px; */
     margin-right: 5%;
-    /* width: 150px; */
     width: 15%;
 }
 
 .form-div
-{   /* background: rgba(0, 255, 0, 0.5); */
-    border: 2px solid var(--head-brd-color);
+{   border: 2px solid var(--head-brd-color);
     border-radius: 2px;
     margin-bottom: 10px;
     padding: 2px;
@@ -89,20 +75,8 @@ aside
 {   display: block;
 }
 
-/*
-aside hr
-{   margin-bottom: 10px;
-    margin-top: 10px;
-}
-*/
-
-/* aside button, main button, main a */
 .button-theme, .favorites-button
-{   /* background: blue; */
-    /* border: 1px solid darkblue; */
-    /* background: var(--head-brd-color); */
-    /* border: 1px solid var(--head-brd-color); */
-    background: gray;
+{   background: gray;
     border: 1px solid gray;
     border-radius: 5px;
     color: white;
@@ -115,11 +89,8 @@ aside hr
 }
 
 .favorites-button
-{   /* background: darkblue; */
-    /* border-color: black; */
-    background: var(--head-brd-color);
+{   background: var(--head-brd-color);
     border-color: var(--head-brd-color);
-    /* margin-bottom: 10px; */
 }
 
 .flash-it-theme-light
@@ -127,10 +98,8 @@ aside hr
     color: var(--head-brd-color);
 }
 
-/* aside button:hover, main button:hover, main a:hover */
 .button-theme:hover, .favorites-button:hover
 {   background: white;
-    /* color: darkblue; */
     color: var(--head-brd-color);
 }
 
@@ -138,29 +107,17 @@ aside hr
 {   height: 32px;
 }
 
-/* end style for aside
-*/
+/*                                  */
+/* begin style for main div         */
+/*                                  */
 
-/* begin style for main div
-*/
-
-/* main */
 section
-{   /* background: rgba(0, 0, 255, 0.5); */
-    /* border: 2px solid black; */
-    /* border-radius: 2px; */
-    float: left;
-    /* width: 70%; */
-    /* position: absolute; */
-    /* right: 0px; */
+{   float: left;
     width: 80%;
-    /* padding: 25px; */
 }
 
 .image-div
-{   /* float: left; */
-    /* display: inline-block; */
-    clear: both;
+{   clear: both;
     margin-bottom: 25px;
     margin-right: 25px;
     width: 100%;
@@ -182,14 +139,9 @@ section
     padding: 2px;
 }
 
-/* end style for main div
-*/
-
-/* Apparently you can't use percentage units (ie: margin: 10% auto;) to automatically center an
-   element.  When I did, this <DIV> was placed as if I had specified bottom: 0px; left: 0px;.  Not only
-   does it NOT center, but it seems to make up position as well?  Change margin to margin-left and
-   position works as expected.  Go figure.
-*/
+/*                                  */
+/* end style for main div           */
+/*                                  */
 
 #concert-div
 {   background: #eeeeee;
@@ -215,27 +167,25 @@ section
     top: 25px;
 }
 
-/* style specific to sticky footer
-*/
+/*                                  */
+/* style specific to sticky footer  */
+/*                                  */
 
 body, html
 {   height: 100%;
 }
 
 .wrapper
-{   /* background: rgba(0, 255, 255, 0.5); */
-    height: auto;
+{   height: auto;
     margin: 0px;
     margin-bottom: -43px;
     min-height: 100%;
     overflow: auto;
-    /* padding: 25px; */
     padding: 10px;
 }
 
 .push
-{   background: yellow;
-    clear: both;
+{   clear: both;
     height: 43px;
 }
 
@@ -250,12 +200,14 @@ footer
     text-align: center;
 }
 
-/* media queries for responsive layout
-*/
+/*                                      */
+/* media queries for responsive layout  */
+/*                                      */
 
 @media screen and (max-width: 768px)
 {   .GIPHY
     {   position: relative;
+        top: 5px;
     }
     
     aside
