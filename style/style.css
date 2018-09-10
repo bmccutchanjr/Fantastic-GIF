@@ -131,7 +131,7 @@ section
 #image-main img
 {   border: 1px solid black;
     border-radius: 2px;
-    display: block;
+    /* display: block; */
     float: left;
     margin-right: 10px;
     margin-bottom: 10px;

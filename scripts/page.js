@@ -511,7 +511,7 @@ function showImage(GIF)
     var textDiv = $("<div>");
 
     textDiv
-        .addClass("image-div")
+        .addClass("text-div")
         .append(p1)
         .append(p2)
         .append(p4)
@@ -521,6 +521,7 @@ function showImage(GIF)
      
     var wrapperDiv = $("<div>");
     wrapperDiv
+        .addClass("image-div")
         .append(newImg)
         .append(textDiv)
         .css("float", "left")
@@ -542,7 +543,6 @@ function showFavorites()
     favorites.forEach(function(fObj)
     {   // This search gets one image, the image identified by fObj.id
         
-//         var URL = "http://api.giphy.com/v1/gifs/" + fObj.id +
         var URL = "https://api.giphy.com/v1/gifs/" + fObj.id +
                   "?api_key=" + myAPIKey;
         $.get(URL)
@@ -577,7 +577,6 @@ function getGIPHY (getWhat, offset)
     $(".ten-more").remove();
 
     // create the search string
-//     var URL = "http://api.giphy.com/v1/gifs/search?q=" + getWhat +
     var URL = "https://api.giphy.com/v1/gifs/search?q=" + getWhat +
         "&api_key=" + myAPIKey +
         "&limit=10&offset=" + offset;
